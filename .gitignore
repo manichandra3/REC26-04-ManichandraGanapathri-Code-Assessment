@@ -1,0 +1,14 @@
+# Secrets
+.env
+
+# Python
+venv/
+__pycache__/
+*.pyc
+
+# Generated artifacts
+chroma_db/
+eval_results.json
+
+# Windows "downloaded file" metadata
+*:Zone.Identifier

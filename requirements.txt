@@ -1,0 +1,6 @@
+# Direct dependencies for the Plain-Vanilla RAG system.
+# pip resolves the (pinned-compatible) transitive deps automatically.
+chromadb==1.5.9          # local persistent vector store + default embeddings
+google-genai==2.10.0     # Gemini LLM client (generation + LLM-as-judge eval)
+pypdf==6.14.2            # PDF text extraction for the corpus
+python-dotenv==1.2.2     # load GEMINI_API_KEY from a .env file
