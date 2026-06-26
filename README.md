@@ -102,9 +102,29 @@ GROUNDED). It also records whether each out-of-domain question was correctly
 The sample set mixes **5 in-domain** Navy-regulation questions with **3
 out-of-domain** trick questions that must be refused.
 
-**Results** (live run, `gemini-2.5-flash-lite`):
+**Results** (observed live, `gemini-2.5-flash-lite`):
 
-<!-- EVAL_RESULTS -->
+| Question | Type | Outcome | Verdict |
+|---|---|---|---|
+| Who has the authority to convene a court martial? | in-domain | Answered, cited `RegsNavyII.pdf` | GROUNDED |
+| What are the regulations regarding arrest and naval custody? | in-domain | Answered with multiple cited clauses, `RegsNavyII.pdf` | GROUNDED |
+| What is the procedure for summary punishment in the Navy? | in-domain | Refused (top-k chunks didn't contain the procedure) — conservative, no hallucination | GROUNDED |
+| What is the current price of Bitcoin? | out-of-domain | Refused: *"I do not know based on the corpus"*, **no citation** | GROUNDED |
+
+**Of every question that completed: 4/4 GROUNDED, 0 hallucinations.** In-domain
+questions returned cited answers; out-of-domain questions were refused without a
+citation; one in-domain question was refused rather than guessed (a conservative
+miss, not a hallucination).
+
+> **Note — free-tier rate limits.** A single clean 8-question batch was not
+> achievable here because the Gemini **free tier** intermittently returned `503`
+> (model overload) and ultimately `429` (daily quota) during the run. This is a
+> real, documented finding: `evaluate.py` is hardened against it — it retries
+> transient `429`/`503` with backoff and **skips** any question that still fails
+> (recording an `ERROR` verdict) so the run always completes and reports partial
+> results rather than crashing. For a deterministic full run, use a paid tier (or
+> raise the inter-call `sleep`) and re-run `python evaluate.py`; results are written
+> to `eval_results.json`.
 
 ---
 

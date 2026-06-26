@@ -92,11 +92,12 @@ def main():
     results = []
     for i, q in enumerate(test_questions):
         print(f"Q: {q}")
-        context, sources = retrieve_context(collection, q)
-        prompt = build_prompt(context, q)
 
-        # One question's API failure must not kill the whole evaluation run.
+        # One question's API/DB failure must not kill the whole evaluation run.
         try:
+            context, sources = retrieve_context(collection, q)
+            prompt = build_prompt(context, q)
+
             time.sleep(6)
             response = generate_with_retry(client, prompt)
             answer = response.text.strip()
@@ -105,7 +106,7 @@ def main():
             eval_result = evaluate_groundedness(q, answer, context, judge_client, generate=generate_with_retry)
         except Exception as e:
             print(f"  ERROR after retries: {str(e)[:120]}")
-            results.append({"question": q, "answer": None, "verdict": "ERROR", "sources": sources, "refused": False})
+            results.append({"question": q, "answer": None, "verdict": "ERROR", "sources": None, "refused": False})
             print()
             continue
 
